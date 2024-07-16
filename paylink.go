@@ -1,7 +1,6 @@
 package payrexxsdk
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -9,7 +8,7 @@ import (
 // PaylinkCreate creates a mew Paylink with Payrexx talking a PaylinkBody
 // and returning the newly created Paylink. Otherwise, returns an error
 func (c *Client) PaylinkCreate(body PaylinkBody) (*Paylink, error) {
-	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("Invoice"), body)
+	req, err := c.NewRequest(http.MethodPost, "Invoice", body)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +20,7 @@ func (c *Client) PaylinkCreate(body PaylinkBody) (*Paylink, error) {
 	}
 
 	if resp.Status != RequestStatusSuccess {
-		return nil, errors.New(fmt.Sprintf("Failed to create Paylink: %s", resp.Message))
+		return nil, fmt.Errorf("failed to create Paylink: %s", resp.Message)
 	}
 
 	return &resp.Data[0], err
@@ -44,7 +43,7 @@ func (c *Client) PaylinkDelete(id int32) error {
 	}
 
 	if resp.Status != RequestStatusSuccess {
-		return errors.New(fmt.Sprintf("Failed to create Paylink: %s", resp.Message))
+		return fmt.Errorf("failed to create Paylink: %s", resp.Message)
 	}
 
 	return nil

@@ -3,7 +3,6 @@ package payrexxsdk
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -24,11 +23,8 @@ type Response[T any] struct {
 
 // Send makes a request to the API, the response body will be unmarshalled into v, or if v
 // is in an io.Writer, the response will be written to it without decoding
-func (c *Client) Send(req *http.Request, v interface{}) error {
-	var (
-		err  error
-		resp *http.Response
-	)
+func (c *Client) Send(req *http.Request, v interface{}) (err error) {
+	var resp *http.Response
 
 	// set default headers
 	req.Header.Set("Accept", "application/json")
@@ -41,12 +37,12 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer func(Body io.ReadCloser) error {
-		return Body.Close()
+	defer func(Body io.ReadCloser) {
+		err = Body.Close()
 	}(resp.Body)
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return errors.New(fmt.Sprintf("Non-200 status code received from Payrexx (%d). %s %s", resp.StatusCode, req.Method, req.URL))
+		return fmt.Errorf("non-200 status code received from Payrexx (%d). %s %s", resp.StatusCode, req.Method, req.URL)
 	}
 
 	if v == nil {
@@ -59,7 +55,10 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 	}
 
 	body, err := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	if err != nil {
+		return err
+	}
+
 	err = json.Unmarshal(body, &v)
 	if err != nil {
 		return err

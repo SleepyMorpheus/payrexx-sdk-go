@@ -1,7 +1,6 @@
 package payrexxsdk
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -9,7 +8,7 @@ import (
 // GatewayCreate creates a mew gateway with Payrexx talking a GatewayBody
 // and returning the newly created Gateway. Otherwise, returns an error
 func (c *Client) GatewayCreate(gateway GatewayBody) (*Gateway, error) {
-	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("Gateway"), gateway)
+	req, err := c.NewRequest(http.MethodPost, "Gateway", gateway)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +20,7 @@ func (c *Client) GatewayCreate(gateway GatewayBody) (*Gateway, error) {
 	}
 
 	if resp.Status != RequestStatusSuccess {
-		return nil, errors.New(fmt.Sprintf("Failed to create gateway: %s", resp.Message))
+		return nil, fmt.Errorf("Failed to create gateway: %s", resp.Message)
 	}
 
 	return &resp.Data[0], err
@@ -44,7 +43,7 @@ func (c *Client) GatewayDelete(id int32) error {
 	}
 
 	if resp.Status != RequestStatusSuccess {
-		return errors.New(fmt.Sprintf("Failed to create gateway: %s", resp.Message))
+		return fmt.Errorf("failed to create gateway: %s", resp.Message)
 	}
 
 	return nil

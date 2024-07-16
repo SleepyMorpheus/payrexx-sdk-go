@@ -56,7 +56,7 @@ func (c *Client) SetLogWriter(w io.Writer) {
 //
 // Eendpoint GET /SignatureCheck/
 func (c *Client) CheckSignature() error {
-	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("SignatureCheck"), nil)
+	req, err := c.NewRequest(http.MethodGet, "SignatureCheck", nil)
 	if err != nil {
 		return err
 	}

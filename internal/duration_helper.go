@@ -4,7 +4,7 @@ import "github.com/sosodev/duration"
 
 func StringToDuration(s string) (*duration.Duration, error) {
 	if s == "" {
-		return nil, nil
+		return &duration.Duration{}, nil
 	}
 
 	dur, err := duration.Parse(s)
@@ -15,7 +15,7 @@ func StringToDuration(s string) (*duration.Duration, error) {
 }
 
 func DurationToString(dura *duration.Duration) string {
-	if dura == nil {
+	if (duration.Duration{}) == *dura {
 		return ""
 	}
 	return dura.String()
