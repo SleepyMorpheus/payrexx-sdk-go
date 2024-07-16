@@ -105,7 +105,7 @@ func TestGatewayHead_UnmarshalJSON(t *testing.T) {
 	}
 
 	if g.CreatedAt != time.Unix(1475578052, 0) {
-		t.Error("Failed to parse CreatedA")
+		t.Error("Failed to parse CreatedAt")
 	}
 
 }
