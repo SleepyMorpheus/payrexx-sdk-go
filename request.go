@@ -58,7 +58,14 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 		return err
 	}
 
-	return json.NewDecoder(resp.Body).Decode(v)
+	body, err := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	err = json.Unmarshal(body, &v)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // NewRequest creates a request which can be modified and sent later on.

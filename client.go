@@ -7,12 +7,10 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"sync"
 )
 
 // Client represents a Payrexx REST API Client
 type Client struct {
-	mu           sync.Mutex
 	Client       *http.Client
 	LogWriter    io.Writer // if set, all requests will be logged to file. Otherwise stdout
 	LogEnabled   bool
@@ -39,15 +37,15 @@ func NewClient(instanceName string, secret string, APIBase string) (*Client, err
 	}, nil
 }
 
-func (c *Client) enableLogging() {
+func (c *Client) EnableLogging() {
 	c.LogEnabled = true
 }
 
-func (c *Client) disableLogging() {
+func (c *Client) DisableLogging() {
 	c.LogEnabled = false
 }
 
-func (c *Client) setLogWriter(w io.Writer) {
+func (c *Client) SetLogWriter(w io.Writer) {
 	c.LogWriter = w
 	if !c.LogEnabled {
 		log.Println("Added log writer without enabling logging!")
@@ -69,7 +67,7 @@ func (c *Client) CheckSignature() error {
 		return err
 	}
 
-	if resp.Status == RequestStatusSuccess {
+	if resp.Status != RequestStatusSuccess {
 		return errors.New(resp.Message)
 	}
 
