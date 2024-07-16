@@ -59,6 +59,8 @@ func (c *Client) Send(req *http.Request, v interface{}) (err error) {
 		return err
 	}
 
+	fmt.Println(string(body))
+
 	err = json.Unmarshal(body, &v)
 	if err != nil {
 		return err
