@@ -36,8 +36,8 @@ type PaylinkBody struct {
 	// (opt) This is an internal name of the payment page. This name will be displayed to the administrator only.
 	Name string `json:"name,omitempty"`
 	// (OPT) The contact data fields which should be displayed
-	// todo: add fields
-	// (OPT)
+	Fields PaylinkBodyFields `json:"fields,omitempty"`
+	// (OPT) Hide the whole contact fields section on invoice page
 	HideFields bool `json:"hideFields"`
 	// (OPT) Only available for Concardis PSP and if the custom ORDERID option is activated in PSP settings in Payrexx administration. This ORDERID will be transferred to the Payengine.
 	ConcardisOrderId string `json:"concardisOrderId,omitempty"`

@@ -13,7 +13,7 @@ type Paylink struct {
 	Purpose map[string]string
 }
 
-func (g Paylink) String() string {
+func (g *Paylink) String() string {
 	return fmt.Sprintf("%s\n%s", g.PaylinkHead.String(), g.PaylinkBody.String())
 }
 

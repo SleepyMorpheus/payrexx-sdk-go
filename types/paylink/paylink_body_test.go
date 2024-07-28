@@ -3,6 +3,7 @@ package paylink
 import (
 	"encoding/json"
 	"github.com/sosodev/duration"
+	"payrexxsdk/types/shared"
 	"testing"
 )
 
@@ -130,6 +131,10 @@ func TestPaylinkBody_UnmarshalJSON(t *testing.T) {
 		t.Error(err)
 	}
 
+	if g.Fields.CustomField1.Names.De != "This is a field" {
+		t.Error("CustomField1.Names.De should be 'This is a field'")
+	}
+
 }
 
 func TestPaylinkBody_MarshalJSON(t *testing.T) {
@@ -138,6 +143,13 @@ func TestPaylinkBody_MarshalJSON(t *testing.T) {
 		SubscriptionInterval:             duration.Duration{Months: 1},
 		SubscriptionPeriod:               duration.Duration{Months: 2},
 		SubscriptionCancellationInterval: duration.Duration{Months: 3},
+		Fields: PaylinkBodyFields{
+			CustomField2: PaylinkBodyFieldTranslatable{
+				Active:    true,
+				Mandatory: false,
+				Names:     shared.Translation{De: "De", En: "En", Fr: "Fr", It: "It"},
+			},
+		},
 	}
 
 	jout, err := json.Marshal(g)
@@ -162,6 +174,17 @@ func TestPaylinkBody_MarshalJSON(t *testing.T) {
 
 	if i["subscriptionCancellationInterval"] != "P3M" {
 		t.Error("SubscriptionCancellationInterval: P3M !=", i["subscriptionCancellationInterval"])
+	}
+
+	customField2 := i["fields"].(map[string]interface{})["custom_field_2"].(map[string]interface{})
+
+	if customField2["active"] != true || customField2["mandatory"] != false {
+		t.Error("Custom field 2 has invalid boolean")
+	}
+
+	names := customField2["names"].(map[string]interface{})
+	if names["de"] != "De" {
+		t.Error("Custom field 2 has invalid de")
 	}
 
 }

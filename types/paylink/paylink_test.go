@@ -122,7 +122,7 @@ const jsonPaylink = `
 }
 `
 
-func TestGateway_UnmarshalJSON(t *testing.T) {
+func TestPaylink_UnmarshalJSON(t *testing.T) {
 
 	var g = Paylink{}
 	err := json.Unmarshal([]byte(jsonPaylink), &g)

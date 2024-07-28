@@ -30,7 +30,3 @@ func (o *Gateway) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
-
-//func (o Gateway) MarshalJSON() ([]byte, error) {
-//
-//}
