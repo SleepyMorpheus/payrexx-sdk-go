@@ -3,8 +3,8 @@ package payrexxsdk
 import (
 	"context"
 	"fmt"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/transaction"
 	"net/http"
-	"payrexxsdk/types/transaction"
 )
 
 func (c *Client) TransactionRetrieve(ctx context.Context, id int32) (*transaction.Transaction, error) {

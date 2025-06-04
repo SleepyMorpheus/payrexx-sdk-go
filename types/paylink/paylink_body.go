@@ -3,8 +3,8 @@ package paylink
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/internal"
 	"github.com/sosodev/duration"
-	"payrexxsdk/internal"
 )
 
 // PaylinkBody represents the data needed to create a Paylink at payrexx

@@ -1,4 +1,4 @@
-module payrexxsdk
+module github.com/SleepyMorpheus/payrexx-sdk-go
 
 go 1.22
 

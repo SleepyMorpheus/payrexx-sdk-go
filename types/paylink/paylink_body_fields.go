@@ -1,6 +1,8 @@
 package paylink
 
-import "payrexxsdk/types/shared"
+import (
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/shared"
+)
 
 /*
 If active, the field will appear on the paylink page to be filled in by the user.

@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"payrexxsdk/types/shared"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/shared"
 	"strconv"
 	"time"
 )

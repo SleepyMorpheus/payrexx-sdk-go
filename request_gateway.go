@@ -3,8 +3,8 @@ package payrexxsdk
 import (
 	"context"
 	"fmt"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/gateway"
 	"net/http"
-	"payrexxsdk/types/gateway"
 )
 
 // GatewayCreate creates a mew gateway with Payrexx talking a GatewayBody

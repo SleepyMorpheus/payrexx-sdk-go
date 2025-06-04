@@ -2,8 +2,8 @@ package paylink
 
 import (
 	"encoding/json"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/shared"
 	"github.com/sosodev/duration"
-	"payrexxsdk/types/shared"
 	"testing"
 )
 

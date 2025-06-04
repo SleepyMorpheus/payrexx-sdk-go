@@ -3,8 +3,8 @@ package payrexxsdk
 import (
 	"context"
 	"fmt"
+	"github.com/SleepyMorpheus/payrexx-sdk-go/types/paylink"
 	"net/http"
-	"payrexxsdk/types/paylink"
 )
 
 // PaylinkCreate creates a mew Paylink with Payrexx talking a PaylinkBody

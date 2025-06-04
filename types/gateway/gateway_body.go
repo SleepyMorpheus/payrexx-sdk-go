@@ -3,8 +3,7 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
-	"payrexxsdk/internal"
-
+	"github.com/SleepyMorpheus/payrexx-sdk-go/internal"
 	"github.com/sosodev/duration"
 )
 
