@@ -1,13 +1,14 @@
 package payrexxsdk
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"payrexxsdk/types/transaction"
 )
 
-func (c *Client) TransactionRetrieve(id int32) (*transaction.Transaction, error) {
-	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("Gateway/%d", id), nil)
+func (c *Client) TransactionRetrieve(ctx context.Context, id int32) (*transaction.Transaction, error) {
+	req, err := c.NewRequest(ctx, http.MethodGet, fmt.Sprintf("Gateway/%d", id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -25,8 +26,8 @@ func (c *Client) TransactionRetrieve(id int32) (*transaction.Transaction, error)
 	return &resp.Data[0], nil
 }
 
-func (c *Client) TransactionRetrieveMany(args transaction.RetrieveManyArguments) (*[]transaction.Transaction, error) {
-	req, err := c.NewRequest(http.MethodGet, "Gateway", nil)
+func (c *Client) TransactionRetrieveMany(ctx context.Context, args transaction.RetrieveManyArguments) (*[]transaction.Transaction, error) {
+	req, err := c.NewRequest(ctx, http.MethodGet, "Gateway", nil)
 	if err != nil {
 		return nil, err
 	}

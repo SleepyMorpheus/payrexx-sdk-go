@@ -2,6 +2,7 @@ package payrexxsdk
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -21,6 +22,19 @@ type Response[T any] struct {
 	Data    []T           `json:"data"`
 }
 
+type APIError struct {
+	StatusCode int
+	Body       []byte
+	Err        error
+}
+
+func (e *APIError) Error() string {
+	if e.Err != nil {
+		return fmt.Sprintf("status %d: %v", e.StatusCode, e.Err)
+	}
+	return fmt.Sprintf("status %d: %s", e.StatusCode, string(e.Body))
+}
+
 // Send makes a request to the API, the response body will be unmarshalled into v, or if v
 // is in an io.Writer, the response will be written to it without decoding
 func (c *Client) Send(req *http.Request, v interface{}) (err error) {
@@ -32,17 +46,35 @@ func (c *Client) Send(req *http.Request, v interface{}) (err error) {
 	req.Header.Set("X-API-KEY", c.Secret)
 
 	resp, err = c.Client.Do(req)
-	c.log(req, resp)
 
 	if err != nil {
 		return err
 	}
 	defer func(Body io.ReadCloser) {
-		err = Body.Close()
+		_ = Body.Close()
 	}(resp.Body)
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("non-200 status code received from Payrexx (%d). %s %s", resp.StatusCode, req.Method, req.URL)
+		data, _ := io.ReadAll(resp.Body)
+
+		if resp.StatusCode == 422 {
+			return &APIError{
+				StatusCode: resp.StatusCode,
+				Body:       data,
+				Err:        fmt.Errorf("wrong instance name"),
+			}
+		} else if resp.StatusCode == 403 {
+			return &APIError{
+				StatusCode: resp.StatusCode,
+				Body:       data,
+				Err:        fmt.Errorf("wrong api secret"),
+			}
+		} else {
+			return &APIError{
+				StatusCode: resp.StatusCode,
+				Body:       data,
+			}
+		}
 	}
 
 	if v == nil {
@@ -61,33 +93,36 @@ func (c *Client) Send(req *http.Request, v interface{}) (err error) {
 
 	fmt.Println(string(body))
 
-	err = json.Unmarshal(body, &v)
-	if err != nil {
-		return err
+	if err := json.Unmarshal(body, v); err != nil {
+		return fmt.Errorf("failed to decode JSON (bytes=%q): %w", string(body), err)
 	}
-
 	return nil
 }
 
 // NewRequest creates a request which can be modified and sent later on.
-func (c *Client) NewRequest(method, endpoint string, payload interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(
+	ctx context.Context,
+	method, endpoint string,
+	payload interface{},
+) (*http.Request, error) {
 	var buf io.Reader
 	if payload != nil {
-		b, err := json.Marshal(&payload)
+		b, err := json.Marshal(payload)
 		if err != nil {
 			return nil, err
 		}
 		buf = bytes.NewBuffer(b)
 	}
 
-	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s/", c.ApiUrl, endpoint), buf)
+	url := fmt.Sprintf("%s/%s/", c.ApiUrl, endpoint)
+	req, err := http.NewRequestWithContext(ctx, method, url, buf)
 	if err != nil {
 		return nil, err
 	}
 
 	q := req.URL.Query()
 	q.Add("instance", c.InstanceName)
-
 	req.URL.RawQuery = q.Encode()
+
 	return req, nil
 }

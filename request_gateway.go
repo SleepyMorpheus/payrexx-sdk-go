@@ -1,6 +1,7 @@
 package payrexxsdk
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"payrexxsdk/types/gateway"
@@ -8,8 +9,8 @@ import (
 
 // GatewayCreate creates a mew gateway with Payrexx talking a GatewayBody
 // and returning the newly created Gateway. Otherwise, returns an error
-func (c *Client) GatewayCreate(body gateway.GatewayBody) (*gateway.Gateway, error) {
-	req, err := c.NewRequest(http.MethodPost, "Gateway", body)
+func (c *Client) GatewayCreate(ctx context.Context, body gateway.GatewayBody) (*gateway.Gateway, error) {
+	req, err := c.NewRequest(ctx, http.MethodPost, "Gateway", body)
 	if err != nil {
 		return nil, err
 	}
@@ -28,8 +29,8 @@ func (c *Client) GatewayCreate(body gateway.GatewayBody) (*gateway.Gateway, erro
 }
 
 // GatewayDelete deletes an existing gateway or returns an error
-func (c *Client) GatewayDelete(id int32) error {
-	req, err := c.NewRequest(http.MethodDelete, fmt.Sprintf("Gateway/%d", id), nil)
+func (c *Client) GatewayDelete(ctx context.Context, id int32) error {
+	req, err := c.NewRequest(ctx, http.MethodDelete, fmt.Sprintf("Gateway/%d", id), nil)
 	if err != nil {
 		return err
 	}
@@ -53,8 +54,8 @@ func (c *Client) GatewayDelete(id int32) error {
 // GatewayRetrieve retrieves a gateway by its ID or returns an error otherwise
 //
 // Returns error payrexxsdk.ResourceNotFoundAPIError if not found
-func (c *Client) GatewayRetrieve(id int32) (*gateway.Gateway, error) {
-	req, err := c.NewRequest(http.MethodGet, fmt.Sprintf("Gateway/%d", id), nil)
+func (c *Client) GatewayRetrieve(ctx context.Context, id int32) (*gateway.Gateway, error) {
+	req, err := c.NewRequest(ctx, http.MethodGet, fmt.Sprintf("Gateway/%d", id), nil)
 	if err != nil {
 		return nil, err
 	}

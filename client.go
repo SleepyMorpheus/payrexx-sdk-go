@@ -1,6 +1,7 @@
 package payrexxsdk
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -54,9 +55,9 @@ func (c *Client) SetLogWriter(w io.Writer) {
 
 // CheckSignature can be used to check if the provided secret is correct
 //
-// Eendpoint GET /SignatureCheck/
-func (c *Client) CheckSignature() error {
-	req, err := c.NewRequest(http.MethodGet, "SignatureCheck", nil)
+// Endpoint GET /SignatureCheck/
+func (c *Client) CheckSignature(ctx context.Context) error {
+	req, err := c.NewRequest(ctx, http.MethodGet, "SignatureCheck", nil)
 	if err != nil {
 		return err
 	}
@@ -98,6 +99,6 @@ func (c *Client) log(req *http.Request, resp *http.Response) {
 	if c.LogWriter != nil {
 		_, _ = c.LogWriter.Write([]byte(fmt.Sprintf("Request: %s\nResponse: %s\n", reqDump, string(respDump))))
 	} else {
-		log.Println("Registered")
+		log.Printf("Request: %s\nResponse: %s\n", reqDump, string(respDump))
 	}
 }
